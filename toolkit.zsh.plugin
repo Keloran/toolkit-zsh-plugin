@@ -1,15 +1,13 @@
-
 # Toolkit for docker and various mac utils
 #
 # Author: Keloran
 
-if [[ $commands[docker] ]]; then
+if [[ ${commands[docker]} ]]; then
   source <(docker completion zsh)
 fi
 
-
 # Projects
-if [[ ! -z "~/Documents/Projects" ]]; then
+if [[ -d $HOME/Documents/Projects ]]; then
   alias projects='cd ~/Documents/Projects'
 fi
 
@@ -37,13 +35,13 @@ function dockerStop() {
     yes | docker-compose rm
     dockerPsClean
   else
-    dockerpath=$(basename ${PWD##*/} | tr 'A-Z' 'a-z')
-    docker stop ${dockerpath}_build
-    docker rmi ${dockerpath}_build
+    dockerpath=$(basename "${PWD##*/}" | tr '[:upper:]' '[:lower:]')
+    docker stop "${dockerpath}"_build
+    docker rmi "${dockerpath}"_build
     dockerPsClean
   fi
 
-  if [[ $commands[docker-clean] ]]; then
+  if [[ ${commands[docker-clean]} ]]; then
     docker-clean
   fi
 }
@@ -51,16 +49,16 @@ function dockerStop() {
 function dockerStart() {
   dockerStop
   if [[ -e $(pwd)/docker.sh ]]; then
-    sh -c $(pwd)/docker.sh
+    sh -c "$(pwd)"/docker.sh
   else
     if [[ -e $(pwd)/docker-compose.yml ]]; then
       docker-compose build
       docker-compose up -d
       docker-compose ps
     else
-      dockerpath=$(basename ${PWD##*/} | tr 'A-Z' 'a-z')
-      docker build -t ${dockerpath} .
-      docker run -P --rm -d -it --name ${dockerpath}_build ${dockerpath}
+      dockerpath=$(basename "${PWD##*/}" | tr '[:upper:]' '[:lower:]')
+      docker build -t "${dockerpath}" .
+      docker run -P --rm -d -it --name "${dockerpath}"_build "${dockerpath}"
     fi
   fi
 }
@@ -72,17 +70,17 @@ function dockerExec() {
       docker-compose ps -a
     else
       if [[ -z $2 ]]; then
-        docker-compose exec $1 sh
+        docker-compose exec "$1" sh
       else
-        docker-compose exec $1 $2
+        docker-compose exec "$1" "$2"
       fi
     fi
   else
-    dockerpath=$(basename ${PWD##/*} | tr 'A-Z' 'a-z')
+    dockerpath=$(basename "${PWD##/*}" | tr '[:upper:]' '[:lower"]')
     if [[ -z $1 ]]; then
-      docker exec ${dockerpath}_build sh
+      docker exec "${dockerpath}"_build sh
     else
-      docker exec ${dockerpath}_build $1
+      docker exec "${dockerpath}"_build "$1"
     fi
   fi
 }
@@ -92,18 +90,18 @@ function dockerLogs() {
     if [[ -z $1 ]]; then
       docker-compose logs -f
     else
-      docker-compose logs -f $1
+      docker-compose logs -f "$1"
     fi
   else
-    dockerpath=$(basename ${PWD##*/} | tr 'A-Z' 'a-z')
-    docker logds -f ${dockerpath}_build
+    dockerpath=$(basename "${PWD##*/}" | tr '[:upper:]' '[:lower:]')
+    docker logds -f "${dockerpath}"_build
   fi
 }
 
 function dockerRestart() {
-  if [[ -e $(pwd)/docker-compose.yml ]] && [[ ! -z $1 ]]; then
-    docker-compose stop $1
-    docker-compose up -d $1
+  if [[ -e $(pwd)/docker-compose.yml ]] && [[ -n $1 ]]; then
+    docker-compose stop "$1"
+    docker-compose up -d "$1"
   else
     dockerStop
     dockerStart
@@ -115,13 +113,13 @@ function dockerAWS() {
   accountNumber=$2
   location=$3
 
-  AWSCred=$(aws ecr get-login --no-include-email --region=${location})
-  docker build -t ${repoName}
-  docker tag ${repoName}:latest ${accountNumber}.dkr.${location}.amazonaws.com/${repoName}:latest
-  docker push ${accountNumber}.dkr.ecr.${location}/${repoName}:latest
+  aws ecr get-login --no-include-email --region "${location}"
+  docker build -t "${repoName}"
+  docker tag "${repoName}":latest "${accountNumber}".dkr."${location}".amazonaws.com/"${repoName}":latest
+  docker push "${accountNumber}".dkr.ecr."${location}"/"${repoName}":latest
 }
 
-alias docker-start='dockerStart;
+alias docker-start='dockerStart'
 alias docker-start-logs='dockerStart && docker-logs'
 alias docker-stop='dockerStop'
 alias docker-logs='docker-compose logs -f'
@@ -129,7 +127,7 @@ alias docker-restart='docker-stop && docker-start'
 alias dpsa='docker ps -a'
 
 # Mac
-if [[ -z "/var/db/locate.database" ]]; then
+if [[ ! -f /var/db/locate.database ]]; then
   alias updatedb='sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist'
 else
   alias updatedb='sudo /usr/libexec/locate.updatedb'
@@ -143,30 +141,34 @@ function cleanOpenWith() {
 
 # Utils
 function mkd() {
-  mkdir -p "$0" && cd "$0"
+  mkdir -p "$0" && cd ... || return
 }
 
-if [[ $commands[colordiff] ]]; then
-  alias cdiff='colordiff -u "$@"'
+if [[ ${commands[colordiff]} ]]; then
+  function cdiff() {
+    colordiff -u "$@"
+  }
 fi
 
-if [[ $commands[dig] ]]; then
-  alias digga='dig +nocmd "$1" ANY +multiline +noall +answer'
+if [[ ${commands[dig]} ]]; then
+  function digga() {
+    dig +nocmd "$1" ANY +multiline +noall +answer
+  }
 fi
 
 function updateSys() {
-  if [[ ! -z $ZSH/tools/upgrade.sh ]]; then
+  if [[ ! -f $ZSH/tools/upgrade.sh ]]; then
     upgrade_oh_my_zsh
   fi
 
-  if [[ $commands[brew] ]]; then
+  if [[ ${commands[brew]} ]]; then
     brew update
     brew upgrade
     brew cask upgrade
     brew cleanup
   fi
 
-  if [[ $commands[mas] ]]; then
+  if [[ ${commands[mas]} ]]; then
     mas outdated
   fi
 
