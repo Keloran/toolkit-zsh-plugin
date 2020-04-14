@@ -141,7 +141,7 @@ function cleanOpenWith() {
 
 # Utils
 function mkd() {
-  mkdir -p "$0" && cd ... || return
+  mkdir -p "$0" && cd "$0" || return
 }
 
 if [[ ${commands[colordiff]} ]]; then
@@ -178,7 +178,7 @@ function updateSys() {
   fi
 }
 
-function mvi() {
+function mv() {
   if [[ "$#" -ne 1 ]]; then
     command mv "$@"
     return
@@ -187,6 +187,7 @@ function mvi() {
     command file "$@"
     return
   fi
-  read -ei "$1 newFilename
+  read -ei "$1" newFilename
   mv -v "$1" "$newFilename"
 }
+
