@@ -178,3 +178,15 @@ function updateSys() {
   fi
 }
 
+function mvi() {
+  if [[ "$#" -ne 1 ]]; then
+    command mv "$@"
+    return
+  fi
+  if [[ ! -f "$1" ]]; then
+    command file "$@"
+    return
+  fi
+  read -ei "$1 newFilename
+  mv -v "$1" "$newFilename"
+}
