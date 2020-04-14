@@ -178,7 +178,7 @@ function updateSys() {
   fi
 }
 
-function mv() {
+function mvi() {
   if [[ "$#" -ne 1 ]]; then
     command mv "$@"
     return
