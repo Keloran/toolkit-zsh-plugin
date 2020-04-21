@@ -141,7 +141,7 @@ function cleanOpenWith() {
 
 # Utils
 function mkd() {
-  mkdir -p "$0" && cd "$0" || return
+  mkdir -p "$1" && cd "$1" || return
 }
 
 if [[ ${commands[colordiff]} ]]; then
