@@ -94,7 +94,7 @@ function dockerLogs() {
     fi
   else
     dockerpath=$(basename "${PWD##*/}" | tr '[:upper:]' '[:lower:]')
-    docker logds -f "${dockerpath}"_build
+    docker logs -f "${dockerpath}"_build
   fi
 }
 
