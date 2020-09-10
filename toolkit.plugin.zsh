@@ -163,8 +163,7 @@ function updateSys() {
 
   if [[ ${commands[brew]} ]]; then
     brew update
-    brew upgrade
-    brew cask upgrade
+    brew upgrade --cask
     brew cleanup
   fi
 
