@@ -157,8 +157,8 @@ if [[ ${commands[dig]} ]]; then
 fi
 
 function updateSys() {
-  if [[ ! -f $ZSH/tools/upgrade.sh ]]; then
-    upgrade_oh_my_zsh
+  if [[ -f $ZSH/oh-my-zsh.sh ]]; then
+    omz update
   fi
 
   if [[ ${commands[brew]} ]]; then
