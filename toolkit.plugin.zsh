@@ -191,3 +191,6 @@ function mvi() {
   mv -v "$1" "$newFilename"
 }
 
+function dbPodPortForward() {
+  kubectl port-forward $(kubectl get pod | grep $1 | sed 's/\ .*//') 3306:3306
+}
