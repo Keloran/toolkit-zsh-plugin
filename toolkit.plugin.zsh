@@ -202,7 +202,6 @@ function kubePort() {
   esac
   
   SVC=$(kubectl get pod | grep $1 | sed 's/\ .*//')
-  PORT=$2
   
   if [[ "$PORT" == "" ]]; then
     echo "You need a port to forward"
