@@ -192,24 +192,34 @@ function mvi() {
 }
 
 function kubePort() {
-  PORT=
-  SVC=
-  
-  case $2 in
-    mysql)
-      PORT=3306
-      ;;
-    bianca)
-      PORT=9111
-      ;;
-  esac
-  
-  SVC=$(kubectl get pod | grep $1 | sed 's/\ .*//')
-  
-  if [[ "$PORT" == "" ]]; then
-    echo "You need a port to forward"
-    return
-  fi
-  
-  kubectl port-forward $SVC $PORT:$PORT
+	PORT=
+	SVC=$(kubectl get pod | grep $1 | sed 's/\ .*//')
+	SERVICE_NAME=$2
+
+	if [[ "$SERVICE_NAME" == *"/"* ]]; then
+		SERVICES=$(echo $SERVICE_NAME | tr "/" "\n")
+		for SERVICE in $SERVICES
+		do
+			kubePort $SVC $SERVICE &
+		done
+		return
+	fi
+
+	case $SERVICE_NAME in
+		mysql)
+			PORT=3306
+			;;
+		bianca)
+			PORT=9111
+		;;
+	esac
+
+
+	if [[ "$PORT" == "" ]]; then
+		echo "You need a port to forward"
+		return
+	fi
+
+	echo "Forwarding for $SERVICE_NAME"
+	kubectl port-forward $SVC $PORT:$PORT
 }
