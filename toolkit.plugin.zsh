@@ -207,7 +207,7 @@ function kubePort() {
     PORT=$2
   fi
   
-  if [[ "$PORT" == ""]; then
+  if [[ "$PORT" == "" ]]; then
     echo "You need a port to forward"
     exit
   fi
