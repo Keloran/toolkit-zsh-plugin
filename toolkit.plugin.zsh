@@ -209,7 +209,7 @@ function kubePort() {
   
   if [[ "$PORT" == "" ]]; then
     echo "You need a port to forward"
-    exit
+    return
   fi
   
   kubectl port-forward $SVC $PORT:$PORT
