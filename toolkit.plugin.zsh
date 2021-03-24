@@ -196,16 +196,6 @@ function kubePort() {
 	SVC=$(kubectl get pod | grep $1 | sed 's/\ .*//')
 	SERVICE_NAME=$2
 
-	if [[ "$SERVICE_NAME" == *"/"* ]]; then
-		SERVICES=$(echo $SERVICE_NAME | tr "/" "\n")
-		for SERVICE in $SERVICES
-		do
-			echo "kubePort $SVC $SERVICE"
-			kubePort "$SVC" "$SERVICE" &
-		done
-		return
-	fi
-
 	case $SERVICE_NAME in
 		mysql)
 			PORT=3306
