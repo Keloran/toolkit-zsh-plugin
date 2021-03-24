@@ -202,6 +202,9 @@ function kubePort() {
       ;;
   esac
   
+  echo $SVC " ... " $PORT
+  return
+  
   if [[ "$SVC" == "" ]]; then
     SVC=$(kubectl get pod | grep $1 | sed 's/\ .*//')
     PORT=$2
