@@ -211,9 +211,13 @@ function kubePort() {
 			;;
 		bianca)
 			PORT=9111
-		;;
+			;;
 	esac
 
+	if [[ "$SERVICE_NAME" == "" ]]; then
+		echo "Service Needed"
+		return
+	fi
 
 	if [[ "$PORT" == "" ]]; then
 		echo "You need a port to forward"
