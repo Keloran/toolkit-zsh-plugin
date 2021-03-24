@@ -195,20 +195,14 @@ function kubePort() {
   PORT=
   SVC=
   
-  case "$1" in
-    "mysql")
+  case $2 in
+    mysql)
       PORT=3306
-      SVC=svc/mysql
       ;;
   esac
   
-  echo $SVC " ... " $PORT
-  return
-  
-  if [[ "$SVC" == "" ]]; then
-    SVC=$(kubectl get pod | grep $1 | sed 's/\ .*//')
-    PORT=$2
-  fi
+  SVC=$(kubectl get pod | grep $1 | sed 's/\ .*//')
+  PORT=$2
   
   if [[ "$PORT" == "" ]]; then
     echo "You need a port to forward"
