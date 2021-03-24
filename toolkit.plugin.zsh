@@ -191,6 +191,21 @@ function mvi() {
   mv -v "$1" "$newFilename"
 }
 
-function dbPodPortForward() {
-  kubectl port-forward $(kubectl get pod | grep $1 | sed 's/\ .*//') 3306:3306
+function kubePort() {
+  PORT=
+  SVC=
+  
+  case $1 in
+    mysql)
+      PORT=3306
+      SVC=svc/mysql
+      ;;
+  esac
+  
+  if [[ "$SVC" == "" ]]; then
+    SVC=$(kubectl get pod | grep $1 | sed 's/\ .*//')
+    PORT=$2
+  fi
+  
+  kubectl port-forward $SVC $PORT:$PORT
 }
