@@ -200,7 +200,8 @@ function kubePort() {
 		SERVICES=$(echo $SERVICE_NAME | tr "/" "\n")
 		for SERVICE in $SERVICES
 		do
-			kubePort $SVC $SERVICE &
+			echo "kubePort $SVC $SERVICE"
+			kubePort "$SVC" "$SERVICE" &
 		done
 		return
 	fi
