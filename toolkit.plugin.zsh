@@ -196,7 +196,7 @@ function kubePort() {
   SVC=
   
   case "$1" in
-    mysql)
+    "mysql")
       PORT=3306
       SVC=svc/mysql
       ;;
