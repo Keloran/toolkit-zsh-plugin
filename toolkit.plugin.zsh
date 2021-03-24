@@ -199,6 +199,9 @@ function kubePort() {
     mysql)
       PORT=3306
       ;;
+    bianca)
+      PORT=9111
+      ;;
   esac
   
   SVC=$(kubectl get pod | grep $1 | sed 's/\ .*//')
