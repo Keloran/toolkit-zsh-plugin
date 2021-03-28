@@ -2,9 +2,9 @@
 #
 # Author: Keloran
 
-if [[ ${commands[docker]} ]]; then
-  source <(docker completion zsh)
-fi
+# if [[ ${commands[docker]} ]]; then
+#   source <(docker completion zsh)
+# fi
 
 # Projects
 if [[ -d $HOME/Documents/Projects ]]; then
@@ -36,7 +36,7 @@ function dockerClean() {
 function dockerStop() {
   if [[ -e $(pwd)Makefile ]]; then
     MakeDown=$(grep '^[^#[:space:]].*:' Makefile | grep docker-down)
-    if [[ ! -z $MakeDown ]]; then
+    if [[ -n $MakeDown ]]; then
       make docker-down
       dockerClean
       return
@@ -63,7 +63,7 @@ function dockerStart() {
 
   if [[ -e $(pwd)/Makefile ]]; then
     MakeUp=$(grep '^[^#[:space:]].*:' Makefile | grep docker-up)
-    if [[ ! -z $MakeUp ]]; then
+    if [[ -n $MakeUp ]]; then
       make docker-up
       return
     fi
@@ -213,13 +213,13 @@ function mvi() {
     command file "$@"
     return
   fi
-  read -ei "$1" newFilename
+  read -eir "$1" newFilename
   mv -v "$1" "$newFilename"
 }
 
 function kubePort() {
 	PORT=
-	SVC=$(kubectl get pod | grep $1 | sed 's/\ .*//')
+	SVC=$(kubectl get pod | grep "$1" | sed 's/\ .*//')
 	SERVICE_NAME=$2
 
 	case $SERVICE_NAME in
@@ -242,5 +242,5 @@ function kubePort() {
 	fi
 
 	echo "Forwarding for $SERVICE_NAME"
-	kubectl port-forward $SVC $PORT:$PORT
+	kubectl port-forward "$SVC" $PORT:$PORT
 }
