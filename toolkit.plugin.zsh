@@ -145,12 +145,12 @@ function dockerAWS() {
   docker push "${accountNumber}".dkr.ecr."${location}"/"${repoName}":latest
 }
 
-alias docker-start='dockerStart'
-alias docker-start-logs='dockerStart && docker-logs'
-alias docker-stop='dockerStop'
-alias docker-logs='docker-compose logs -f'
-alias docker-restart='docker-stop && docker-start'
-alias dpsa='docker ps -a'
+#alias docker-start='dockerStart'
+#alias docker-start-logs='dockerStart && docker-logs'
+#alias docker-stop='dockerStop'
+#alias docker-logs='docker-compose logs -f'
+#alias docker-restart='docker-stop && docker-start'
+#alias dpsa='docker ps -a'
 
 # Mac
 if [[ ! -f /var/db/locate.database ]]; then
