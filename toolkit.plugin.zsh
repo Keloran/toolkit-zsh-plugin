@@ -29,38 +29,64 @@ function dockerPsClean() {
   docker ps -a --format '{{.Names}} {{.Status}}' | grep 'Exited' | awk '{print $1}' | xargs docker rm
 }
 
-function dockerStop() {
-  if [[ -e $(pwd)/docker-compose.yml ]]; then
-    docker-compose stop
-    yes | docker-compose rm
-    dockerPsClean
-  else
-    dockerpath=$(basename "${PWD##*/}" | tr '[:upper:]' '[:lower:]')
-    docker stop "${dockerpath}"_build
-    docker rmi "${dockerpath}"_build
-    dockerPsClean
-  fi
-
+function dockerClean() {
   if [[ ${commands[docker-clean]} ]]; then
     docker-clean
   fi
 }
 
-function dockerStart() {
-  dockerStop
-  if [[ -e $(pwd)/docker.sh ]]; then
-    sh -c "$(pwd)"/docker.sh
-  else
-    if [[ -e $(pwd)/docker-compose.yml ]]; then
-      docker-compose build
-      docker-compose up -d
-      docker-compose ps
-    else
-      dockerpath=$(basename "${PWD##*/}" | tr '[:upper:]' '[:lower:]')
-      docker build -t "${dockerpath}" .
-      docker run -P --rm -d -it --name "${dockerpath}"_build "${dockerpath}"
+function dockerStop() {
+  if [[ -e $(pwd)Makefile ]]; then
+    MakeDown=$(grep '^[^#[:space:]].*:' Makefile | grep docker-down)
+    if [[ ! -z $MakeDown ]]; then
+      make docker-down
+      dockerClean
+      return
     fi
   fi
+
+  if [[ -e $(pwd)/docker-compose.yml ]]; then
+    docker-compose stop
+    yes | docker-compose rm
+    dockerPsClean
+    dockerClean
+    return
+  fi
+
+  dockerpath=$(basename "${PWD##*/}" | tr '[:upper:]' '[:lower:]')
+  docker stop "${dockerpath}"_build
+  docker rmi "${dockerpath}"_build
+  dockerPsClean
+  dockerClean
+}
+
+function dockerStart() {
+  dockerStop
+
+  if [[ -e $(pwd)/Makefile ]]; then
+    MakeUp=$(grep '^[^#[:space:]].*:' Makefile | grep docker-up)
+    if [[ ! -z $MakeUp ]]; then
+      make docker-up
+      return
+    fi
+  fi
+
+
+  if [[ -e $(pwd)/docker.sh ]]; then
+    sh -c "$(pwd)"/docker.sh
+    return
+  fi
+
+  if [[ -e $(pwd)/docker-compose.yml ]]; then
+    docker-compose build
+    docker-compose up -d
+    docker-compose ps
+    return
+  fi
+
+  dockerpath=$(basename "${PWD##*/}" | tr '[:upper:]' '[:lower:]')
+  docker build -t "${dockerpath}" .
+  docker run -P --rm -d -it --name "${dockerpath}"_build "${dockerpath}"
 }
 
 function dockerExec() {
@@ -75,13 +101,14 @@ function dockerExec() {
         docker-compose exec "$1" "$2"
       fi
     fi
+    return
+  fi
+
+  dockerpath=$(basename "${PWD##/*}" | tr '[:upper:]' '[:lower"]')
+  if [[ -z $1 ]]; then
+    docker exec "${dockerpath}"_build sh
   else
-    dockerpath=$(basename "${PWD##/*}" | tr '[:upper:]' '[:lower"]')
-    if [[ -z $1 ]]; then
-      docker exec "${dockerpath}"_build sh
-    else
-      docker exec "${dockerpath}"_build "$1"
-    fi
+    docker exec "${dockerpath}"_build "$1"
   fi
 }
 
@@ -92,10 +119,11 @@ function dockerLogs() {
     else
       docker-compose logs -f "$1"
     fi
-  else
-    dockerpath=$(basename "${PWD##*/}" | tr '[:upper:]' '[:lower:]')
-    docker logs -f "${dockerpath}"_build
+    return
   fi
+
+  dockerpath=$(basename "${PWD##*/}" | tr '[:upper:]' '[:lower:]')
+  docker logs -f "${dockerpath}"_build
 }
 
 function dockerRestart() {
