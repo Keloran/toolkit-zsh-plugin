@@ -30,7 +30,9 @@ function dockerPsClean() {
 }
 
 function dockerClean() {
-  docker system prune --all --volumes
+  if [[ ${commands[docker-clean]} ]]; then
+    docker-clean
+  fi
 }
 
 function dockerStop() {
