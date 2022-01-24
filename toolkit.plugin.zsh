@@ -6,6 +6,10 @@
 #   source <(docker completion zsh)
 # fi
 
+# Alias docker as nerdctl
+alias docker='nerdctl'
+
+
 # Projects
 if [[ -d $HOME/Documents/Projects ]]; then
   alias projects='cd ~/Documents/Projects'
