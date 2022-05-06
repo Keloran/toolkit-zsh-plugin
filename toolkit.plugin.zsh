@@ -7,7 +7,21 @@
 # fi
 
 # Alias docker as nerdctl
-alias docker='nerdctl'
+if [[ ${commands[nerdctl]} ]]; then
+  alias docker='nerdctl'
+fi
+
+if [[ ! ${commands[yay]} ]]; then
+  if [[ ${commands[paru]} ]]; then
+    alias yay='paru'
+  fi
+fi
+
+if [[ ${commands[yay]} ]]; then
+  alias yeet='yay -Rcs'
+elif [[ ${commands[paru]} ]]; then
+  alias yeet='paru -Rcs'
+fi
 
 
 # Projects
@@ -202,6 +216,10 @@ function updateSys() {
 
   if [[ ${commands[mas]} ]]; then
     mas outdated
+  fi
+
+  if [[ ${commands[yay]} ]]; then
+    yay -Syu
   fi
 
   zplugs=$(declare -f zplug > /dev/null; echo $?)
