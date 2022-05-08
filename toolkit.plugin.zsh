@@ -218,17 +218,24 @@ function updateSys() {
     mas outdated
   fi
 
-  if [[ ${commands[yay]} ]]; then
-    yay -Syu
-  fi
-
-  if [[ ${commands[paru]} ]]; then
-    paru
-  fi
-
   zplugs=$(declare -f zplug > /dev/null; echo $?)
   if [[ ${zplugs} == 0 ]]; then
     zplug update
+  fi
+
+  if [[ ${commands[paru]} ]]; then
+    paru -Syu
+    return
+  fi
+
+  if [[ ${commands[yay]} ]]; then
+    yay -Syu
+    return
+  fi
+
+  if [[ ${commands[pacman]} ]]; then
+    pacman -Syu
+    return
   fi
 }
 
