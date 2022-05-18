@@ -279,3 +279,8 @@ function kubePort() {
 	echo "Forwarding for $SERVICE_NAME"
 	kubectl port-forward "$SVC" $PORT:$PORT
 }
+
+function archOrphans() {
+  sudo pacman -Rns $(pacman -Qtdq)
+}
+

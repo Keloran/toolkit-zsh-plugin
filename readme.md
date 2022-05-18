@@ -48,6 +48,15 @@ This runs all the update commands for a mac (well all the ones I use,
 - mas outdated
 - zplug update
 
+This also works on Arch it does the following
+- zplug update
+- yay (or puca) -Syu
+
+```
+archOprhans
+```
+This can be used to remove orphan packages, this will remove things like boost which might not be used by you now, but recompiling it takes at least 20min
+
 ## Docker
 ```
 cleanDockerImages
