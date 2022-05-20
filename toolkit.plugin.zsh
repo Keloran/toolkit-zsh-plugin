@@ -174,7 +174,11 @@ alias dpsa='docker ps -a'
 
 # Mac
 if [[ ! -f /var/db/locate.database ]]; then
-  alias updatedb='sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist'
+  if [[ ${commands[launchctl]} ]]; then
+    alias updatedb='sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.locate.plist'
+  else
+    alias updatedb='sudo updatedb'
+  fi
 else
   alias updatedb='sudo /usr/libexec/locate.updatedb'
 fi
