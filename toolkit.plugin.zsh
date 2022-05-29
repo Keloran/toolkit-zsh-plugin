@@ -288,3 +288,13 @@ function archOrphans() {
   sudo pacman -Rns $(pacman -Qtdq)
 }
 
+function listPackages() {
+  if [[ ${commands[pacman]} ]]; then
+    pacman -Q | less
+  fi
+
+  if [[ ${commands[brew]} ]]; then
+    brew list | less
+  fi
+}
+

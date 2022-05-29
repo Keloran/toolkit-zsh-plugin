@@ -101,3 +101,8 @@ e.g.
 dockerAWS tester 12345 eu-west-2
 ```
 This will try and push the container tester to ECR in eu-west-2 under teh 12345 account
+
+```
+listPackages
+```
+This lists all the packages installed by Brew or Pacman
