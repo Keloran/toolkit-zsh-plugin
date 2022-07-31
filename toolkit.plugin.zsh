@@ -44,7 +44,11 @@ function dockerUpdateAll() {
 }
 
 function dockerPsClean() {
-  docker ps -a --format '{{.Names}} {{.Status}}' | grep 'Exited' | awk '{print $1}' | xargs docker rm
+  c=docker
+  if [[ ${commands[nerdctl]} ]]; then
+    c=nerdctl
+  fi
+  $c ps -a --format '{{.Names}} {{.Status}}' | grep 'Exited' | awk '{print $1}' | xargs $c rm
 }
 
 function dockerClean() {
@@ -206,11 +210,17 @@ if [[ ${commands[dig]} ]]; then
   }
 fi
 
-function updateSys() {
-  if [[ -f $ZSH/oh-my-zsh.sh ]]; then
-    omz update
+function updateZSH() {
+  if [[ ${commands[zplug]} ]]; then
+    zplug update
   fi
 
+  if [[ -f $ZSH/oih-my-zsh.sh ]]; then
+    omz update
+  fi
+}
+
+function updateSys() {
   if [[ ${commands[brew]} ]]; then
     brew update
     brew upgrade
@@ -222,25 +232,32 @@ function updateSys() {
     mas outdated
   fi
 
-  zplugs=$(declare -f zplug > /dev/null; echo $?)
-  if [[ ${zplugs} == 0 ]]; then
-    zplug update
+  if [[ ${commands[topgrade]} ]]; then
+    topgrade
+    updateZSH
+    return
   fi
+
 
   if [[ ${commands[paru]} ]]; then
     paru -Syu
+    updateZSH
     return
   fi
 
   if [[ ${commands[yay]} ]]; then
     yay -Syu
+    updateZSH
     return
   fi
 
   if [[ ${commands[pacman]} ]]; then
     pacman -Syu
+    updateZSH
     return
   fi
+
+  updateZSH
 }
 
 function mvi() {
@@ -298,3 +315,10 @@ function listPackages() {
   fi
 }
 
+function kubeSecret() {
+  echo -n $1 | base64
+}
+
+function fixSSH() {
+  /lib/fingerprint-gui/fingerprint-polkit-agent &
+}
