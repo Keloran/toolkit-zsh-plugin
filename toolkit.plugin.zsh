@@ -225,7 +225,6 @@ function updateSys() {
     brew update
     brew upgrade
     brew upgrade --cask
-    brew cleanup
   fi
 
   if [[ ${commands[mas]} ]]; then
@@ -258,6 +257,24 @@ function updateSys() {
   fi
 
   updateZSH
+}
+
+function cleanPackages() {
+  if [[ ${commands[brew]} ]]; then
+    brew cleanup
+  fi
+
+  if [[ ${commands[paru]} ]]; then
+    paru -Sc
+  fi
+
+  if [[ ${commands[yay]} ]]; then
+    yay -Sc
+  fi
+
+  if [[ ${commands[pacman]} ]]; then
+    pacman -Sc
+  fi
 }
 
 function mvi() {
@@ -320,5 +337,5 @@ function kubeSecret() {
 }
 
 function fixSSH() {
-  /lib/fingerprint-gui/fingerprint-polkit-agent &
+  /lib/fingerprint-gui/fingerprint-polkit-agent -d &
 }
